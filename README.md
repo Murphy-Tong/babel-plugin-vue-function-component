@@ -1,44 +1,6 @@
 # Vue Function Component
 ## write Vue3 like React
-
-```typescript
-import { defineComponent, onMounted, ref, type SetupContext } from 'vue'
-
-const DefineComp = defineComponent({
-  setup() {
-    return function () {
-      return <div>this is define component</div>
-    }
-  },
-})
-
-function FnComponent(props: { msg: string }, ctx: SetupContext) {
-  const count = ref(0)
-  onMounted(function () {
-    setInterval(function () {
-      count.value++
-    }, 1000)
-  })
-  return function () {
-    return <div>
-      {props.msg}<br />
-      {count.value}
-      {ctx.slots?.default?.()}
-    </div>
-  }
-}
-
-export default function () {
-  const tapCount = ref(0)
-  return function () {
-    return <FnComponent msg="count down!" >
-      <button onClick={() => tapCount.value++}> tap count :{tapCount.value}</button>
-      <DefineComp />
-    </FnComponent>
-  }
-}
-```
-
+[Online Demo](https://codesandbox.io/p/github/Murphy-Tong/babel-plugin-vue-function-component-demo/draft/charming-mestorf?file=%2Fsrc%2FApp.tsx&workspace=%257B%2522activeFileId%2522%253A%2522cl9qwbmqe000clrfsgxg42wfb%2522%252C%2522openFiles%2522%253A%255B%2522%252FREADME.md%2522%255D%252C%2522sidebarPanel%2522%253A%2522EXPLORER%2522%252C%2522gitSidebarPanel%2522%253A%2522COMMIT%2522%252C%2522sidekickItems%2522%253A%255B%257B%2522type%2522%253A%2522PREVIEW%2522%252C%2522taskId%2522%253A%2522dev%2522%252C%2522port%2522%253A5173%252C%2522key%2522%253A%2522cl9qwqpzm000q3d6ijlsxq1dr%2522%252C%2522isMinimized%2522%253Afalse%257D%255D%257D)
 
 ### 工作方式
 
