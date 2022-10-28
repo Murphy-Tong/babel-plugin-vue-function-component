@@ -1,4 +1,4 @@
-import { SetupContext } from "vue"
+import * as Vue from "vue"
 
 const VAL = { i: false, g: 1 }
 type InnerTypes = typeof VAL

@@ -1,4 +1,3 @@
-import * as BabelCore from '@babel/core';
 //@ts-ignore
 import tsxSyntax from '@babel/plugin-syntax-typescript';
 import template from "@babel/template";
@@ -15,7 +14,6 @@ type IState = {
     insertTarget?: t.ImportDeclaration,
     inserted?: boolean,
     vueNSName?: string,
-    vue?: string,
     propLocalName?: string,
     defineComponentLocalName?: string,
     typeDefines?: Array<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>,
@@ -26,12 +24,8 @@ type IState = {
      * babel passed attr
      */
     filename: string,
-
-    /**
-     * user config plugin attr
-     */
-
-} & ParseOption
+    opts?: ParseOption
+}
 
 type TSTypeFieldMap = Record<string, t.TSType>
 
@@ -214,7 +208,7 @@ function createSetupExpression(name: string, fn: t.FunctionDeclaration | t.Funct
         CALLEE: state.defineComponentLocalName || 'defineComponent',
     }
     if (state.vueNSName) {
-        placements.NS = state.vueNSName || state.vue
+        placements.NS = state.vueNSName || state.opts!.vue
     }
     return (state.vueNSName ? SETUP_TEMPLATE_NS : SETUP_TEMPLATE)(placements);
 }
@@ -237,7 +231,7 @@ function processVariableDeclaration(path: NodePath<t.VariableDeclaration>, state
         if (!t.isFunctionExpression(val) && !t.isArrowFunctionExpression(val)) {
             return
         }
-        if (!canProcessFn(val, state.filename, name, state.includeFns)) {
+        if (!canProcessFn(val, state.filename, name, state.opts!.includeFns)) {
             return
         }
         declarationsCopy.splice(index, 1)
@@ -267,10 +261,13 @@ function addVueImport(path: NodePath<t.Program>, state: IState) {
         return
     }
     state.inserted = true
+    if (state.vueNSName) {
+        return
+    }
     let insertTarget = state.insertTarget
     //没有导入Vue
     if (!insertTarget) {
-        insertTarget = t.importDeclaration([t.importSpecifier(t.identifier("defineComponent"), t.identifier("defineComponent")), t.importSpecifier(t.identifier("PropType"), t.identifier("PropType"))], t.stringLiteral(state.vue!))
+        insertTarget = t.importDeclaration([t.importSpecifier(t.identifier("defineComponent"), t.identifier("defineComponent")), t.importSpecifier(t.identifier("PropType"), t.identifier("PropType"))], t.stringLiteral(state.opts!.vue!))
         path.node.body.unshift(insertTarget)
         state.propLocalName = "PropType"
         state.defineComponentLocalName = "defineComponent"
@@ -296,12 +293,13 @@ export default function () {
         visitor: {
             Program: {
                 enter(path: NodePath<t.Program>, state: IState) {
-                    if (!canProcessFile(state.filename, state.includeFiles)) {
+                    if (!canProcessFile(state.filename, state.opts!.includeFiles)) {
                         path.stop()
                         return
                     }
                     setErrorBuilder(state, path)
-                    Object.assign(state, { ...DEFAULT_CONFIG, ...state })
+                    const mergedOptions = { ...DEFAULT_CONFIG, ...(state.opts || {}) }
+                    state.opts = mergedOptions
                     state.vueNSName = undefined
                     state.defineComponentLocalName = undefined
                     state.propLocalName = undefined
@@ -329,7 +327,7 @@ export default function () {
                         if (!t.isImportDeclaration(segment)) {
                             continue;
                         }
-                        if (segment.source.value !== state.vue) {
+                        if (segment.source.value !== state.opts!.vue) {
                             continue
                         }
                         const specifiers = segment.specifiers
@@ -372,7 +370,7 @@ export default function () {
             },
             FunctionDeclaration: function (path: NodePath<t.FunctionDeclaration>, state: IState) {
                 setErrorBuilder(state, path)
-                if (!canProcessFn(path.node, state.filename, path.node.id!.name, state.includeFns)) {
+                if (!canProcessFn(path.node, state.filename, path.node.id!.name, state.opts!.includeFns)) {
                     path.skip()
                     return
                 }
@@ -394,7 +392,7 @@ export default function () {
                 }
                 const declaration = path.node.declaration
                 if (t.isFunctionDeclaration(declaration)) {
-                    if (!canProcessFn(declaration, state.filename, declaration.id?.name || 'default', state.includeFns)) {
+                    if (!canProcessFn(declaration, state.filename, declaration.id?.name || 'default', state.opts!.includeFns)) {
                         path.skip()
                         return
                     }
@@ -411,7 +409,7 @@ export default function () {
                 }
                 const declaration = path.node.declaration
                 if (t.isFunctionDeclaration(declaration)) {
-                    if (!canProcessFn(declaration, state.filename, declaration.id!.name, state.includeFns)) {
+                    if (!canProcessFn(declaration, state.filename, declaration.id!.name, state.opts!.includeFns)) {
                         path.skip()
                         return
                     }

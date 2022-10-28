@@ -26,13 +26,22 @@ export interface ParseOption {
 }
 
 
-function isTS(fileName: string) {
-    return /\.tsx?$/.test(fileName)
+function isTSX(fileName: string) {
+    return /\.tsx$/.test(fileName)
+}
+
+function isJS(fileName: string) {
+    return /\.jsx?$/.test(fileName)
 }
 
 export function canProcessFile(filename: string, includeFiles?: IncludeFileCB) {
+    // no js forever
+    if (isJS(filename)) {
+        return false
+    }
     if (!includeFiles) {
-        return isTS(filename)
+        // only tsx
+        return isTSX(filename)
     }
     if (typeof includeFiles === 'function') {
         return includeFiles(filename)
@@ -52,9 +61,6 @@ export function canProcessFn(fn: t.FunctionDeclaration | t.FunctionExpression | 
     }
     if (!fnName) {
         return false
-    }
-    if (fnName === 'default') {
-        return true
     }
     return micromatch.isMatch(fnName, includeFns)
 }

@@ -1,33 +1,5 @@
 import { SetupContext } from "vue"
 
-const VAL = { i: false, g: 1 }
-type InnerTypes = typeof VAL
-
-type InnerType2 = {
-    c: boolean,
-    f: Function,
-    fc: (a: InnerType2) => boolean
-}
-export interface IProps {
-    a: string,
-    A: String,
-    b: boolean,
-    B: Boolean,
-    c: number,
-    C: Number,
-    d: Array<string>,
-    D: string[],
-    e: Map<string, any>,
-    E: { [key: string]: any },
-    f: InnerTypes,
-    h: typeof VAL,
-    i: Partial<typeof VAL>,
-    j: Symbol,
-    k: () => any,
-    l: Function,
-    m: InnerType2,
-}
-
 /******************************* NO TRANSLATE **********************************/
 function component() {
     return function () {
@@ -47,39 +19,19 @@ const componentValNamed = function ComponentValNamed() {
     }
 }
 
-
-/******************************* TRANSLATE **********************************/
 function Component() {
     return function () {
         return <div></div>
     }
 }
 
-function ComponentProps(props: IProps) {
+function ComponentProps(props) {
     return function () {
         return <div></div>
     }
 }
 
-function ComponentLocalProps(props: {
-    a: string,
-    A: String,
-    b: boolean,
-    B: Boolean,
-    c: number,
-    C: Number,
-    d: Array<string>,
-    D: string[],
-    e: Map<string, any>,
-    E: { [key: string]: any },
-    f: InnerTypes,
-    h: typeof VAL,
-    i: Partial<typeof VAL>,
-    j: Symbol,
-    k: () => any,
-    l: Function,
-    m: InnerType2,
-}) {
+function ComponentLocalProps(props) {
     return function () {
         return <div></div>
     }
@@ -106,7 +58,7 @@ const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn() {
     }
 }
 
-export default function (props: IProps, ctx: SetupContext) {
+export default function (props, ctx) {
     return function () {
         return <div>你好啊
             {props.a}

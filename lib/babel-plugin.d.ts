@@ -9,7 +9,6 @@ declare type IState = {
     insertTarget?: t.ImportDeclaration;
     inserted?: boolean;
     vueNSName?: string;
-    vue?: string;
     propLocalName?: string;
     defineComponentLocalName?: string;
     typeDefines?: Array<t.TSTypeAliasDeclaration | t.TSInterfaceDeclaration>;
@@ -19,7 +18,8 @@ declare type IState = {
      * babel passed attr
      */
     filename: string;
-} & ParseOption;
+    opts?: ParseOption;
+};
 export default function (): {
     inherits: any;
     visitor: {
