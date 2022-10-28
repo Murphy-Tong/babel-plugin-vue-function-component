@@ -4,14 +4,14 @@
 
 ### 工作方式
 
-通过 babel 插件对所有的 tsx 文件进行处理，
-获取所有的模块顶级的方法定义和方法赋值表达式，
+通过 babel 插件默认对所有的 tsx 文件进行处理，
+获取所有的**模块顶级**的**方法定义**和**方法赋值表达式**，
 如果方法声明了参数，则取第一个参数的类型，从类型定义中解析出 props 中去要声明的字段和类型，
 将以上信息整合，用 defineComponent 包装成 vue 组件，赋值给同名常量。
 
-### 处理范围
+### 文件、方法的处理范围
 
-所有在模块顶级的函数声明或函数表达式
+默认在所有**tsx文件中**，在**模块顶级**的，名称以**大写字母开头**的函数声明或函数表达式
 
 ```typescript
 // file: comp-a.tsx
@@ -27,9 +27,10 @@ const CompB = function () {
 };
 ```
 
-### props 类型定义的检索范围
+### props 类型定义的检索、处理范围
 
-当前模块内定义的 Ts 类型，**_必须在 props 的类型定义中显示的声明出 props 中的字段_**，这样插件才能正确的解析出 props 中的 key 和对应的类型；如下：
+1. 必须与组件在同一文件中
+2. vue props中的字段必须直接声明在props**类型**中，不可以使用联合类型，不支持类型推断 
 
 ```typescript
 function test() {}
@@ -43,7 +44,7 @@ type IProps = {
   };
 };
 
-/******************* ONE ************************/
+/******************* EXAMPLE ONE ************************/
 function CompOK(props: IProps) {
   // xxx
 }
@@ -66,7 +67,7 @@ const CompOK = defineComponent({
   },
 });
 
-/******************* TWO ************************/
+/******************* EXAMPLE TWO ************************/
 function CompOk2(props: { a: number }) {
   // sss
 }
@@ -84,10 +85,6 @@ const CompOk2 = defineComponent({
   },
 });
 
-/******************* OTHERS ************************/
-export function CompC() {}
-
-export default function CompD() {}
 ```
 
 下面的写法是无法解析的
@@ -161,7 +158,7 @@ export default defineConfig({
 
 #### 3. config types
 
-为了告诉编译器 setup function 也是合法的 function compomnent，创建文件 src/xxx.d.ts （放在哪里，叫什么都不重要，重要的是这恶搞文件要在 tsconfig 的 include 范围内）
+为了告诉编译器 setup function 也是合法的 function compomnent，创建文件 src/xxx.d.ts （放在哪里，叫什么都不重要，重要的是这个文件要在 tsconfig 的 include 范围内）
 
 file: src/xxx.d.ts
 
@@ -169,3 +166,36 @@ file: src/xxx.d.ts
 /// <reference types="babel-plugin-vue-function-component/types"/>
 // 上面的内容必须在第一行
 ```
+
+### 插件配置
+参考：[micromatch]()
+
+```typescript
+export interface PluginOption {
+
+    /**
+     * @see micromatch 
+     * 一个micromatch支持的参数 
+     * 或者 一个函数 (filename)=>boolean
+     * 默认：[**/*.tsx] //所有的tsx文件
+     */
+    includeFiles?: IncludeFileCB,
+
+    /**
+     * @see micromatch 
+     * 一个micromatch支持的参数 
+     * 或者 一个函数 (functionName,filename)=>boolean
+     * ⚠️: 默认导出的匿名方法名将为default
+     * 默认：['[_A-Z]*'] //大写开头的方法名
+     */
+    includeFns?: IncludeFnCB,
+
+    /**
+     * vue 在模块中导入时使用的别名 默认： vue
+     */
+    vue?: string
+}
+```
+
+### 注意
+1. 此插件不会处理js、jsx文件
