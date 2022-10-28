@@ -51,7 +51,6 @@ const componentValNamed = function ComponentValNamed() {
 /******************************* TRANSLATE **********************************/
 const Component = defineComponent({
   name: "Component",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;
@@ -118,7 +117,6 @@ const ComponentLocalProps = defineComponent({
 });
 const ComponentWithin = defineComponent({
   name: "ComponentWithin",
-  props: {},
   setup: function () {
     function Inner() {
       return 1;
@@ -130,7 +128,6 @@ const ComponentWithin = defineComponent({
 });
 const ComponentValDefine = defineComponent({
   name: "ComponentValDefine",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;
@@ -139,7 +136,6 @@ const ComponentValDefine = defineComponent({
 });
 const ComponentValDefineWithName = defineComponent({
   name: "ComponentValDefineWithName",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;

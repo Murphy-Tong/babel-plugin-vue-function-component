@@ -109,8 +109,7 @@ export default function (props: IProps, ctx: SetupContext) {
             {ctx.slots.default?.()?.[0]}
         </div>;
   };
-}mber,
-    d: (Object as PropType<Array<string>>),
+}(Object as PropType<Array<string>>),
     D: (Object as PropType<string[]>),
     e: (Object as PropType<Map<string, any>>),
     E: (Object as PropType<{
@@ -132,7 +131,6 @@ export default function (props: IProps, ctx: SetupContext) {
 });
 const ComponentWithin = defineComponent({
   name: "ComponentWithin",
-  props: {},
   setup: function () {
     function Inner() {
       return 1;
@@ -144,7 +142,6 @@ const ComponentWithin = defineComponent({
 });
 const ComponentValDefine = defineComponent({
   name: "ComponentValDefine",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;
@@ -153,7 +150,6 @@ const ComponentValDefine = defineComponent({
 });
 const ComponentValDefineWithName = defineComponent({
   name: "ComponentValDefineWithName",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;

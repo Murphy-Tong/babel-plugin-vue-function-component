@@ -99,10 +99,9 @@ CALLEE({
 })
 `)
 
-const SETUP_TEMPLATE_NS = template.expression(`
-NS.CALLEE({
+const SETUP_TEMPLATE_NO_PROPS = template.expression(`
+CALLEE({
     name:NAME,
-    props:PROPS_NODE,
     setup:SETUP_FN
 })
 `)
@@ -151,19 +150,22 @@ function resolveTSMembersFromTSReference(node: t.TSTypeReference, state: IState)
     throw state.buildCodeFrameError!('无法解析ts类型成员:' + node.type)
 }
 
-function resolveTSMembers(node: t.TSType, state: IState): TSTypeFieldMap {
+function resolveTSMembers(node: t.TSType, state: IState): TSTypeFieldMap | null {
     if (t.isTSTypeLiteral(node)) {
         return resolveTSMembersFromTSObject(node, state)
     }
     if (t.isTSTypeReference(node)) {
         return resolveTSMembersFromTSReference(node, state)
     }
+    if (t.isTSAnyKeyword(node)) {
+        return null
+    }
     throw state.buildCodeFrameError!('无法解析的ts类型:' + node.type)
 }
 
 
 function setErrorBuilder(state: IState, path: NodePath) {
-    state.buildCodeFrameError = path.buildCodeFrameError
+    state.buildCodeFrameError = path.buildCodeFrameError.bind(path)
 }
 
 function createSetupExpression(name: string, fn: t.FunctionDeclaration | t.FunctionExpression | t.ArrowFunctionExpression, state: IState): t.Expression {
@@ -201,16 +203,17 @@ function createSetupExpression(name: string, fn: t.FunctionDeclaration | t.Funct
     // fnExp.start = fn.start;
     // fnExp.trailingComments = fn.trailingComments;
     fnExp.typeParameters = fn.typeParameters;
+
+    const defineCallee = state.vueNSName ? `${state.vueNSName}.${state.defineComponentLocalName || 'defineComponent'}` : state.defineComponentLocalName || 'defineComponent'
     const placements: any = {
         NAME: t.stringLiteral(name),
-        PROPS_NODE: t.objectExpression(propsObj),
         SETUP_FN: fnExp,
-        CALLEE: state.defineComponentLocalName || 'defineComponent',
+        CALLEE: defineCallee,
     }
-    if (state.vueNSName) {
-        placements.NS = state.vueNSName || state.opts!.vue
+    if (propsObj.length) {
+        placements.PROPS_NODE = t.objectExpression(propsObj)
     }
-    return (state.vueNSName ? SETUP_TEMPLATE_NS : SETUP_TEMPLATE)(placements);
+    return (!propsObj.length ? SETUP_TEMPLATE_NO_PROPS : SETUP_TEMPLATE)(placements);
 }
 
 function createComponentVariableDeclaration(name: string, val: t.Expression) {

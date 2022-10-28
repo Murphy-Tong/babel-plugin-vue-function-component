@@ -53,9 +53,9 @@ allfileLoop((f, name) => {
 })
 
 allfileLoop((f, name) => {
-    test(`plugin config fn name is ComponentLocalProps or componentValNamed for ${name}`, function () {
+    test(`plugin config fn name is ComponentLocalProps or componentValNamed or default for ${name}`, function () {
         expect(transform(f, {
-            includeFns: ['ComponentLocalProps', 'componentValNamed']
+            includeFns: ['ComponentLocalProps', 'componentValNamed', 'default']
         })!.code).toMatchSnapshot()
     })
 })

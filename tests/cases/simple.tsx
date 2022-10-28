@@ -85,7 +85,7 @@ function ComponentLocalProps(props: {
     }
 }
 
-function ComponentWithin() {
+function ComponentWithin(props: any) {
     function Inner() {
         return 1
     }
@@ -100,7 +100,7 @@ const ComponentValDefine = function () {
     }
 }
 
-const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn() {
+const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn(props: {}) {
     return function () {
         return <div></div>
     }

@@ -84,7 +84,7 @@ function ComponentLocalProps(props: {
     return <div></div>;
   };
 }
-function ComponentWithin() {
+function ComponentWithin(props: any) {
   function Inner() {
     return 1;
   }
@@ -97,7 +97,7 @@ const ComponentValDefine = function () {
     return <div></div>;
   };
 };
-const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn() {
+const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn(props: {}) {
   return function () {
     return <div></div>;
   };
@@ -109,8 +109,7 @@ export default function (props: IProps, ctx: SetupContext) {
             {ctx.slots.default?.()?.[0]}
         </div>;
   };
-}{
-    return <div></div>;
+}v>;
   };
 }
 const ComponentValDefine = function () {
@@ -118,7 +117,7 @@ const ComponentValDefine = function () {
     return <div></div>;
   };
 };
-const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn() {
+const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn(props: {}) {
   return function () {
     return <div></div>;
   };
@@ -130,41 +129,29 @@ export default function (props: IProps, ctx: SetupContext) {
             {ctx.slots.default?.()?.[0]}
         </div>;
   };
-}ject as PropType<InnerType2>)
+}),
+    D: (Object as PropType<string[]>),
+    e: (Object as PropType<Map<string, any>>),
+    E: (Object as PropType<{
+      [key: string]: any;
+    }>),
+    f: (Object as PropType<InnerTypes>),
+    h: (Object as PropType<typeof VAL>),
+    i: (Object as PropType<Partial<typeof VAL>>),
+    j: (Object as PropType<Symbol>),
+    k: (Object as PropType<() => any>),
+    l: (Object as PropType<Function>),
+    m: (Object as PropType<InnerType2>)
   },
-  setup: function (props) {
+  setup: function (props, ctx: SetupContext) {
     return function () {
-      return <div></div>;
+      return <div>你好啊
+            {props.a}
+            {ctx.slots.default?.()?.[0]}
+        </div>;
     };
   }
-});
-const ComponentWithin = defineComponent({
-  name: "ComponentWithin",
-  props: {},
-  setup: function () {
-    function Inner() {
-      return 1;
-    }
-    return function () {
-      return <div></div>;
-    };
-  }
-});
-const ComponentValDefine = defineComponent({
-  name: "ComponentValDefine",
-  props: {},
-  setup: function () {
-    return function () {
-      return <div></div>;
-    };
-  }
-});
-const ComponentValDefineWithName = defineComponent({
-  name: "ComponentValDefineWithName",
-  props: {},
-  setup: function () {
-    return function () {
-      return <div></div>;
+});<div></div>;
     };
   }
 });

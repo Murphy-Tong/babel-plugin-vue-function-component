@@ -51,7 +51,6 @@ const componentValNamed = function ComponentValNamed() {
 /******************************* TRANSLATE **********************************/
 const Component = Vue.defineComponent({
   name: "Component",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;
@@ -118,7 +117,6 @@ const ComponentLocalProps = Vue.defineComponent({
 });
 const ComponentWithin = Vue.defineComponent({
   name: "ComponentWithin",
-  props: {},
   setup: function () {
     function Inner() {
       return 1;
@@ -130,7 +128,6 @@ const ComponentWithin = Vue.defineComponent({
 });
 const ComponentValDefine = Vue.defineComponent({
   name: "ComponentValDefine",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;
@@ -139,7 +136,6 @@ const ComponentValDefine = Vue.defineComponent({
 });
 const ComponentValDefineWithName = Vue.defineComponent({
   name: "ComponentValDefineWithName",
-  props: {},
   setup: function () {
     return function () {
       return <div></div>;
