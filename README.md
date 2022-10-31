@@ -134,7 +134,7 @@ yarn add -D babel-plugin-vue-function-component
 
 ```javascript
 {
-  "plugins": ["babel-plugin-vue-function-component", ["@babel/plugin-syntax-typescript",{ isTSX:true }]]
+  "plugins": ["babel-plugin-vue-function-component","@vue/babel-plugin-jsx"]
 }
 ```
 
