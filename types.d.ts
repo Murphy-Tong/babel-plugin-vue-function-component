@@ -1,5 +1,7 @@
 /// <reference path="types_m.d.ts"/>
-type SetupFnComponent = () => GlobalVNode
+type VNode = GlobalVNode
+type NullVNode = null|undefined
+type SetupFnComponent = () => VNode|VNode[]|NullVNode|NullVNode[]|SetupFnComponent|SetupFnComponent[]
 declare namespace JSX {
-    type Element = GlobalVNode | SetupFnComponent
+    type Element = VNode|SetupFnComponent
 }
