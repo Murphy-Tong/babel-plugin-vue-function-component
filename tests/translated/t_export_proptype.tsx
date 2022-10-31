@@ -142,11 +142,35 @@ const ComponentValDefineWithName = defineComponent({
     };
   }
 });
-export default function (props: IProps, ctx: SetupContext) {
-  return function () {
-    return <div>你好啊
+export default defineComponent({
+  name: "t_export_proptype",
+  props: {
+    a: String,
+    A: String,
+    b: Boolean,
+    B: Boolean,
+    c: Number,
+    C: Number,
+    d: (Object as PropType<Array<string>>),
+    D: (Object as PropType<string[]>),
+    e: (Object as PropType<Map<string, any>>),
+    E: (Object as PropType<{
+      [key: string]: any;
+    }>),
+    f: (Object as PropType<InnerTypes>),
+    h: (Object as PropType<typeof VAL>),
+    i: (Object as PropType<Partial<typeof VAL>>),
+    j: (Object as PropType<Symbol>),
+    k: (Object as PropType<() => any>),
+    l: (Object as PropType<Function>),
+    m: (Object as PropType<InnerType2>)
+  },
+  setup: function (props, ctx: SetupContext) {
+    return function () {
+      return <div>你好啊
             {props.a}
             {ctx.slots.default?.()?.[0]}
         </div>;
-  };
-}
+    };
+  }
+});

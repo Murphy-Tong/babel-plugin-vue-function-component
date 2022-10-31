@@ -142,11 +142,35 @@ const ComponentValDefineWithName = Vue.defineComponent({
     };
   }
 });
-export default function (props: IProps, ctx: SetupContext) {
-  return function () {
-    return <div>你好啊
+export default Vue.defineComponent({
+  name: "t_export_namespace",
+  props: {
+    a: String,
+    A: String,
+    b: Boolean,
+    B: Boolean,
+    c: Number,
+    C: Number,
+    d: (Object as Vue.PropType<Array<string>>),
+    D: (Object as Vue.PropType<string[]>),
+    e: (Object as Vue.PropType<Map<string, any>>),
+    E: (Object as Vue.PropType<{
+      [key: string]: any;
+    }>),
+    f: (Object as Vue.PropType<InnerTypes>),
+    h: (Object as Vue.PropType<typeof VAL>),
+    i: (Object as Vue.PropType<Partial<typeof VAL>>),
+    j: (Object as Vue.PropType<Symbol>),
+    k: (Object as Vue.PropType<() => any>),
+    l: (Object as Vue.PropType<Function>),
+    m: (Object as Vue.PropType<InnerType2>)
+  },
+  setup: function (props, ctx: SetupContext) {
+    return function () {
+      return <div>你好啊
             {props.a}
             {ctx.slots.default?.()?.[0]}
         </div>;
-  };
-}
+    };
+  }
+});

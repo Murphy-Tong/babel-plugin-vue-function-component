@@ -3,7 +3,7 @@ import micromatch from 'micromatch';
 import * as t from '@babel/types';
 
 export const DEFAULT_CONFIG = {
-    includeFns: ['[_A-Z]*'],
+    includeFns: ['[_A-Z]*', 'default'],
     vue: 'vue'
 }
 
