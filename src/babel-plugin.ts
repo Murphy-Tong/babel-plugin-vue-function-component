@@ -1,3 +1,4 @@
+import { PluginObj } from '@babel/core';
 //@ts-ignore
 import tsxSyntax from '@babel/plugin-syntax-typescript';
 import template from "@babel/template";
@@ -290,9 +291,68 @@ function onFnTransformed(state: IState, path: NodePath<t.Node>, fnName: string) 
     state.convertedFunctions?.push(fnName)
 }
 
-export default function () {
+const fnVisitor = {
+    FunctionDeclaration: function (path: NodePath<t.FunctionDeclaration>, state: IState) {
+        setErrorBuilder(state, path)
+        if (!canProcessFn(path.node, state.filename, path.node.id!.name, state.opts!.includeFns)) {
+            path.skip()
+            return
+        }
+        // 顶级的方法声明肯定有名字
+        onFnTransformed(state, path, path.node.id!.name)
+        path.replaceWith(createComponentVariableDeclaration(path.node.id!.name, createSetupExpression(path.node.id!.name, path.node, state)))
+        path.skip()
+    },
+    VariableDeclaration: function (path: NodePath<t.VariableDeclaration>, state: IState) {
+        setErrorBuilder(state, path)
+        processVariableDeclaration(path, state)
+        path.skip()
+    },
+    ExportDefaultDeclaration: function (path: NodePath<t.ExportDefaultDeclaration>, state: IState) {
+        setErrorBuilder(state, path)
+        if (!path.node.exportKind) {
+            path.skip()
+            return
+        }
+        const declaration = path.node.declaration
+        if (t.isFunctionDeclaration(declaration)) {
+            if (!canProcessFn(declaration, state.filename, declaration.id?.name || 'default', state.opts!.includeFns)) {
+                path.skip()
+                return
+            }
+            onFnTransformed(state, path, declaration.id?.name || fspath.parse(state.filename).name)
+            path.get('declaration').replaceWith(createSetupExpression(declaration.id?.name || fspath.parse(state.filename).name, declaration, state))
+        }
+        path.skip()
+    },
+    ExportNamedDeclaration: function (path: NodePath<t.ExportNamedDeclaration>, state: IState) {
+        setErrorBuilder(state, path)
+        if (path.node.exportKind !== 'value') {
+            path.skip()
+            return
+        }
+        const declaration = path.node.declaration
+        if (t.isFunctionDeclaration(declaration)) {
+            if (!canProcessFn(declaration, state.filename, declaration.id!.name, state.opts!.includeFns)) {
+                path.skip()
+                return
+            }
+            //方法声明肯定有名字的
+            onFnTransformed(state, path, declaration.id!.name)
+            path.replaceWith(createSetupExpression(declaration.id!.name, declaration, state))
+        } else if (t.isVariableDeclaration(declaration)) {
+            // 常量赋值 ，取常量的名字
+            processVariableDeclaration(path.get('declaration') as NodePath<t.VariableDeclaration>, state)
+        }
+        path.skip()
+    }
+}
+
+export default function (): PluginObj<IState> {
     return {
-        inherits: tsxSyntax,
+        inherits: function (api: any, opt: IState, dir: any) {
+            return tsxSyntax(api, { ...opt || {}, isTSX: true }, dir)
+        },
         visitor: {
             Program: {
                 enter(path: NodePath<t.Program>, state: IState) {
@@ -342,7 +402,7 @@ export default function () {
                             if (t.isImportNamespaceSpecifier(specifier)) {
                                 //import * as XX
                                 state.vueNSName = specifier.local.name;
-                                return
+                                continue
                             }
                             if (t.isImportDefaultSpecifier(specifier)) {
                                 state.insertTarget = segment
@@ -356,8 +416,8 @@ export default function () {
                                     state.defineComponentLocalName = specifier.local.name;
                                 }
                             }
-
                         }
+                        path.traverse(fnVisitor, state)
                     }
                 }, exit(path: NodePath<t.Program>, state: IState) {
                     state.vueNSName = undefined
@@ -371,60 +431,7 @@ export default function () {
                     state.program = undefined
                 }
             },
-            FunctionDeclaration: function (path: NodePath<t.FunctionDeclaration>, state: IState) {
-                setErrorBuilder(state, path)
-                if (!canProcessFn(path.node, state.filename, path.node.id!.name, state.opts!.includeFns)) {
-                    path.skip()
-                    return
-                }
-                // 顶级的方法声明肯定有名字
-                onFnTransformed(state, path, path.node.id!.name)
-                path.replaceWith(createComponentVariableDeclaration(path.node.id!.name, createSetupExpression(path.node.id!.name, path.node, state)))
-                path.skip()
-            },
-            VariableDeclaration: function (path: NodePath<t.VariableDeclaration>, state: IState) {
-                setErrorBuilder(state, path)
-                processVariableDeclaration(path, state)
-                path.skip()
-            },
-            ExportDefaultDeclaration: function (path: NodePath<t.ExportDefaultDeclaration>, state: IState) {
-                setErrorBuilder(state, path)
-                if (!path.node.exportKind) {
-                    path.skip()
-                    return
-                }
-                const declaration = path.node.declaration
-                if (t.isFunctionDeclaration(declaration)) {
-                    if (!canProcessFn(declaration, state.filename, declaration.id?.name || 'default', state.opts!.includeFns)) {
-                        path.skip()
-                        return
-                    }
-                    onFnTransformed(state, path, declaration.id?.name || fspath.parse(state.filename).name)
-                    path.get('declaration').replaceWith(createSetupExpression(declaration.id?.name || fspath.parse(state.filename).name, declaration, state))
-                }
-                path.skip()
-            },
-            ExportNamedDeclaration: function (path: NodePath<t.ExportNamedDeclaration>, state: IState) {
-                setErrorBuilder(state, path)
-                if (path.node.exportKind !== 'value') {
-                    path.skip()
-                    return
-                }
-                const declaration = path.node.declaration
-                if (t.isFunctionDeclaration(declaration)) {
-                    if (!canProcessFn(declaration, state.filename, declaration.id!.name, state.opts!.includeFns)) {
-                        path.skip()
-                        return
-                    }
-                    //方法声明肯定有名字的
-                    onFnTransformed(state, path, declaration.id!.name)
-                    path.replaceWith(createSetupExpression(declaration.id!.name, declaration, state))
-                } else if (t.isVariableDeclaration(declaration)) {
-                    // 常量赋值 ，取常量的名字
-                    processVariableDeclaration(path.get('declaration') as NodePath<t.VariableDeclaration>, state)
-                }
-                path.skip()
-            },
+
         }
     }
 }

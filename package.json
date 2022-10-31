@@ -43,6 +43,7 @@
     "@types/jest": "^29.2.0",
     "@types/micromatch": "^4.0.2",
     "@types/rollup": "^0.54.0",
+    "@vue/babel-plugin-jsx": "^1.1.1",
     "babel-jest": "^29.2.1",
     "gulp": "^4.0.2",
     "gulp-babel": "8.0.0",

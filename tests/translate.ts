@@ -10,12 +10,20 @@ function generate(name: string, code: string) {
 }
 
 
-export function transform(fileDir: fs.PathLike, opt?: ParseOption) {
+export function transform(fileDir: fs.PathLike, opt?: ParseOption, transJSX = false) {
+    const plugins: any = [
+        ['./lib/babel-plugin.js', opt],
+    ]
+    if (transJSX) {
+        plugins.push(
+            ['@vue/babel-plugin-jsx', { mergeProps: false, enableObjectSlots: false, transformOn: true }],
+        )
+    }
     const res = transformSync(fs.readFileSync(fileDir, { encoding: 'utf-8' }), {
         filename: fileDir.toString(),
         sourceFileName: fileDir.toString(),
         configFile: false,
-        plugins: [['./lib/babel-plugin.js', opt], ['@babel/plugin-syntax-typescript', { isTSX: true }]],
+        plugins
     })
     generate(path.parse(fileDir.toString()).base, res?.code || "")
     return res
