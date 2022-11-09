@@ -143,34 +143,33 @@ yarn add -D babel-plugin-vue-function-component
 ```javascript
 
 rules: [
-        {
-          test: /.tsx$/,
-          use: [
-            'babel-loader',
-            {
-              loader: 'ts-loader',
-              options: {
-                transpileOnly: true,
-                happyPackMode: false,
-                appendTsxSuffixTo: [
-                  '\\.vue$'
-                ]
-              }
-            },
-            {
-              loader: path.resolve(__dirname,'./node_modules/babel-plugin-vue-function-component/lib/webpack-loader.js')
-            }
-          ],
-        },
-      ],
+  {
+    test: /.tsx$/,
+    use: [
+      'babel-loader',
+      {
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: true,
+          happyPackMode: false,
+          appendTsxSuffixTo: [
+            '\\.vue$'
+          ]
+        }
+      },
+      {
+        loader: path.resolve(__dirname,'./node_modules/babel-plugin-vue-function-component/lib/webpack-loader.js')
+      }
+    ],
+  },
+],
 
 ```
 
-##### 2.2 如果你用的是 vite，那么添加一个插件
+##### 2.3 如果你用的是 vite，那么添加一个插件
 
 ```javascript
 //file: vite.config.js
-
 
 import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
