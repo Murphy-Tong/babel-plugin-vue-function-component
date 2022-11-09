@@ -138,6 +138,15 @@ yarn add -D babel-plugin-vue-function-component
 }
 ```
 
+##### 2.2 如果你用 webpack，那么配置一个loader在tsloader之后（ts-loader执行之前）
+
+```javascript
+import { webpackLoader } from 'babel-plugin-vue-function-component'
+
+... some webpack config
+
+```
+
 ##### 2.2 如果你用的是 vite，那么添加一个插件
 
 ```javascript

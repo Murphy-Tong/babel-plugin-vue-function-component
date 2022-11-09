@@ -1,41 +1,70 @@
-import { createVNode as _createVNode, resolveComponent as _resolveComponent } from "vue";
-import List from '@/components/list';
-import { KEY_AGREEMENTS } from '@/constant';
-import usePagination from '@/hooks/usePagination';
-import { Field, Form } from '@souche-ui/vant-next';
-import '@souche-ui/vant-next/lib/calendar/index.less';
-import '@souche-ui/vant-next/lib/field/index.less';
-import * as Vue from 'vue';
-import Agreement from './components/agreement';
+import { createTextVNode as _createTextVNode, createVNode as _createVNode, defineComponent } from "vue";
+import { CreditStatus } from '@/api/krd';
+import TitleBar from '@/components/title-bar';
+import { KEY_REFRESH_KRD_LIST } from '@/constant';
+import { openPage } from '@/utils/navigator';
+import { getDefaultPool } from '@/utils/taskPool';
+import Tab from '@souche-ui/vant-next/es/tab';
+import Tabs from '@souche-ui/vant-next/es/tabs';
+import '@souche-ui/vant-next/lib/tabs/index.less';
+import KrdList from './components/list';
 import styles from './index.module.less';
-export default Vue.defineComponent({
+const TABS = [{
+  name: '全部',
+  type: CreditStatus.ALL
+}, {
+  name: '申请预授信',
+  type: CreditStatus.ON_PREPARE
+}, {
+  name: '申请贷款',
+  type: CreditStatus.ON_LOAN
+}, {
+  name: '已取消',
+  type: CreditStatus.CANCEL
+}];
+export default defineComponent({
   name: "1",
   setup: function () {
-    const pagination = usePagination(function () {
-      return Promise.resolve({
-        hasMore: false
+    const goSelectCar = function () {
+      openPage('/krd/cars');
+    };
+    const activeTabRef = ref('全部');
+    const refreshKey = ref(1);
+    onMounted(function () {
+      getDefaultPool().storeById(KEY_REFRESH_KRD_LIST, function () {
+        activeTabRef.value = '全部';
+        refreshKey.value = refreshKey.value + 1;
       });
     });
+    onUnmounted(function () {
+      getDefaultPool().remove(KEY_REFRESH_KRD_LIST);
+    });
     return function () {
-      return _createVNode(_resolveComponent("page"), {
-        "class": styles.page
+      return _createVNode("div", {
+        "class": styles.krd
+      }, [_createVNode(TitleBar, null, null), _createVNode(Tabs, {
+        "class": styles.tabContent,
+        'active': activeTabRef.value,
+        "onUpdate:active": $event => activeTabRef.value = $event,
+        "key": refreshKey.value
       }, {
-        default: () => [_createVNode("div", {
-          "class": styles.container
-        }, [_createVNode(List, {
-          "pagination": pagination,
-          "class": styles.list,
-          "enableRefresh": false,
-          "enableLoadMore": false
-        }, {
-          default: (data: CreditContract) => {
-            return _createVNode(_resolveComponent("Agre"), {
-              "key": data.url,
-              "data": data
-            }, null);
-          }
-        })])]
-      });
+        default: () => [TABS.map(t => {
+          return _createVNode(Tab, {
+            "title": t.name,
+            "key": t.name
+          }, {
+            default: () => [_createVNode(KrdList, {
+              "class": styles.krdList,
+              "type": t.type
+            }, null)]
+          });
+        })]
+      }), _createVNode("div", {
+        "class": styles.bottom
+      }, [_createVNode("div", {
+        "class": styles.button,
+        "onClick": goSelectCar
+      }, [_createTextVNode("\u65B0\u589E\u5BC4\u552E\u8F66\u8F86")])])]);
     };
   }
 });

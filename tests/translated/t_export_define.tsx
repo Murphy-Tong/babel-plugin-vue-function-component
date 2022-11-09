@@ -1,4 +1,4 @@
-import { SetupContext, defineComponent, PropType } from "vue";
+import { SetupContext, defineComponent, PropType } from "@vue";
 const VAL = {
   i: false,
   g: 1
