@@ -1,4 +1,4 @@
-import * as Vue from "@vue";
+import * as Vue from "vue";
 const VAL = {
   i: false,
   g: 1

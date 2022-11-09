@@ -1,5 +1,5 @@
 // @ts-nocheck
-import babel from '@babel/core'
+import * as babel from '@babel/core'
 
 export default function (src: string, map: any, meta: any) {
     const callback = this.async()

@@ -1,5 +1,5 @@
-import * as Vue from "@vue";
-import type { PropType } from '@vue';
+import * as Vue from "vue";
+import type { PropType } from 'vue';
 const VAL = {
   i: false,
   g: 1
