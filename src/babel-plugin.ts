@@ -500,9 +500,6 @@ export default function (): PluginObj<IState> {
     inherits: function (api: any, opt: IState, dir: any) {
       return tsxSyntax(api, { ...opt || {}, isTSX: true }, dir);
     },
-    pre: function () {
-      transformedFns = {} as Record<string, string[]>;
-    },
     post: function () {
       const dir = fspath.resolve(__dirname, "../transformed");
       fs.mkdirSync(dir.toString(), { recursive: true });
