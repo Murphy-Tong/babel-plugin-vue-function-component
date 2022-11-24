@@ -106,6 +106,14 @@ const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn() {
     }
 }
 
+export function Cbbbb(props: { a: string }) {
+    debugger
+    return function () {
+        return <view>{props.a}</view>
+    }
+}
+
+
 export default function (props: IProps, ctx: SetupContext) {
     return function () {
         return <div>你好啊

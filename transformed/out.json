@@ -1,5 +1,47 @@
 {
-    "/Users/dsc/Documents/ws/privacy/pp/tests/cases_special/1.tsx": [
-        "1"
+    "/Users/dsc/Documents/ws/privacy/pp/tests/cases_alias_vue/t_export_alredy.tsx": [
+        "Component",
+        "ComponentProps",
+        "ComponentLocalProps",
+        "ComponentWithin",
+        "ComponentValDefine",
+        "ComponentValDefineWithName",
+        "t_export_alredy"
+    ],
+    "/Users/dsc/Documents/ws/privacy/pp/tests/cases_alias_vue/t_export_define.tsx": [
+        "Component",
+        "ComponentProps",
+        "ComponentLocalProps",
+        "ComponentWithin",
+        "ComponentValDefine",
+        "ComponentValDefineWithName",
+        "t_export_define"
+    ],
+    "/Users/dsc/Documents/ws/privacy/pp/tests/cases_alias_vue/t_export_namespace.tsx": [
+        "Component",
+        "ComponentProps",
+        "ComponentLocalProps",
+        "ComponentWithin",
+        "ComponentValDefine",
+        "ComponentValDefineWithName",
+        "t_export_namespace"
+    ],
+    "/Users/dsc/Documents/ws/privacy/pp/tests/cases_alias_vue/t_export_namespace_PropType.tsx": [
+        "Component",
+        "ComponentProps",
+        "ComponentLocalProps",
+        "ComponentWithin",
+        "ComponentValDefine",
+        "ComponentValDefineWithName",
+        "t_export_namespace_PropType"
+    ],
+    "/Users/dsc/Documents/ws/privacy/pp/tests/cases_alias_vue/t_export_proptype.tsx": [
+        "Component",
+        "ComponentProps",
+        "ComponentLocalProps",
+        "ComponentWithin",
+        "ComponentValDefine",
+        "ComponentValDefineWithName",
+        "t_export_proptype"
     ]
 }

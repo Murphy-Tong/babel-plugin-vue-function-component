@@ -102,6 +102,14 @@ const ComponentValDefineWithName = function ComponentValDefineWithNameOfFn() {
     return <div></div>;
   };
 };
+export function Cbbbb(props: {
+  a: string;
+}) {
+  debugger;
+  return function () {
+    return <view>{props.a}</view>;
+  };
+}
 export default function (props: IProps, ctx: SetupContext) {
   return function () {
     return <div>你好啊
@@ -109,10 +117,7 @@ export default function (props: IProps, ctx: SetupContext) {
             {ctx.slots.default?.()?.[0]}
         </div>;
   };
-}(Object as PropType<Array<string>>),
-    D: (Object as PropType<string[]>),
-    e: (Object as PropType<Map<string, any>>),
-    E: (Object as PropType<{
+} E: (Object as PropType<{
       [key: string]: any;
     }>),
     f: (Object as PropType<InnerTypes>),
@@ -153,6 +158,18 @@ const ComponentValDefineWithName = defineComponent({
   setup: function () {
     return function () {
       return <div></div>;
+    };
+  }
+});
+export const Cbbbb = defineComponent({
+  name: "Cbbbb",
+  props: {
+    a: String
+  },
+  setup: function (props) {
+    debugger;
+    return function () {
+      return <view>{props.a}</view>;
     };
   }
 });

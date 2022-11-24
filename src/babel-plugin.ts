@@ -481,8 +481,11 @@ const fnVisitor = {
       }
       //方法声明肯定有名字的
       onFnTransformed(state, path, declaration.id!.name);
-      path.replaceWith(
-        createSetupExpression(declaration.id!.name, declaration, state),
+      path.get("declaration").replaceWith(
+        createComponentVariableDeclaration(
+          declaration.id!.name,
+          createSetupExpression(declaration.id!.name, declaration, state),
+        ),
       );
     } else if (t.isVariableDeclaration(declaration)) {
       // 常量赋值 ，取常量的名字
