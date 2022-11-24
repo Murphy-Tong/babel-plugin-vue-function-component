@@ -6,7 +6,6 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
     "declaration": true,
     "declarationDir": "./lib",
     "esModuleInterop": true,
@@ -14,10 +13,11 @@
     "resolveJsonModule": true,
     "sourceMap": false,
     "skipLibCheck": true,
+    "experimentalDecorators": true,
     "outDir": "./lib",
     "types": ["node", "jest"],
     "lib": ["esnext"]
   },
-  "include": ["src/**/*.ts", "test/**/*.tsx", "test/**/*.ts", "types.d.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.tsx", "tests/**/*.ts", "types.d.ts"],
   "exclude": ["node_modules"]
 }
